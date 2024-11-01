@@ -20,7 +20,7 @@ return new class extends Migration
             $table->time('lama_sewa');
             $table->time('lama_habis');
             $table->string('bukti_transfer');
-            $table->boolean('is_confirm')->default(false);
+            $table->boolean('konfirmasi')->default(false);
             $table->timestamps();
         });
     }

@@ -4,8 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Lapangan;
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+function formatCurrency($amount)
+{
+    return str_replace(['Rp', '.', ' '], '', $amount);
+}
+
+
+function addTime($datetime, $hours = 0, $minutes = 0, $seconds = 0)
+{
+    // Convert the given datetime to a Carbon instance
+    $date = Carbon::parse($datetime);
+
+    $hoursToAdd = floatval($hours);
+
+    // Add hours, minutes, and seconds
+    $date->addHours($hoursToAdd)->addMinutes($minutes)->addSeconds($seconds);
+
+    return $date->toDateTimeString();
+}
 
 class UserLapanganController extends Controller
 {
@@ -21,11 +41,53 @@ class UserLapanganController extends Controller
     }
 
 
+
+
+    public function postOrder(Request $request)
+    {
+
+        $user = Auth::user();
+
+        $filePath = $request->file('bukti_transfer')->store('images', 'public');
+
+
+        $lama_habis = addTime($request->tanggal_pesan, $request->lama_sewa);
+
+        $currentDateTime = now();
+
+
+        // Save order details to database (Example)
+        Order::create([
+            'user_id' => $user->id,
+            'lapangan_id' => $request->lapangan_id,
+            'tanggal_pesan' => $currentDateTime,
+            'jam_pesan' => $request->tanggal_pesan,
+            'lama_sewa' => $request->lama_sewa,
+            'lama_habis' => $lama_habis,
+            'total_harga' => formatCurrency($request->total),
+            'konfirmasi' => "Belum konfirmasi",
+            'bukti_transfer' => $filePath ?? null,
+        ]);
+
+        // Redirect or return a response
+        return redirect()->route('pembayaran')->with('message', 'Order successful!');
+    }
+
     public function get_jadwal(Request $request)
     {
 
         $user = Auth::user();
-        $order = Order::with(['users', 'lapangans'])->where('lapangan_id', $request->id)->find($user);
+        $order = Order::with(['users', 'lapangans'])->where('lapangan_id', $request->id)->get();
+        return $order;
+    }
+
+    public function get_order(Request $request)
+    {
+
+        $user = Auth::user();
+        $order = Order::with(['users', 'lapangans'])
+            ->where('user_id', $user->id) // Filter by user ID
+            ->get(); // Use get() to retrieve all matching orders
         return $order;
     }
 

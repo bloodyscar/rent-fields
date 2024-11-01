@@ -32,9 +32,22 @@ class RegisteredUserController extends Controller
 
 
         $request->validate([
+            'file' => 'required|file|mimes:jpg,png,pdf|max:2048', // Validate file type and size
+        ]);
+
+        $filePath = $request->file('file')->store('images', 'public');
+
+
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => [
+                'required',
+                'confirmed',
+                Rules\Password::defaults(),
+
+            ],
+
         ]);
 
         $check = User::where('email', $request->email)->first();
@@ -50,6 +63,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'alamat' => $request->alamat,
             'gender' => $request->jenis_kelamin,
+            'avatar' => $filePath,
         ]);
 
         event(new Registered($user));

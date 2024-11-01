@@ -7,6 +7,9 @@ use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -15,6 +18,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use function Laravel\Prompts\search;
+
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
@@ -22,30 +27,63 @@ class OrderResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 3;
 
+
+    protected static ?string $navigationLabel = 'Data Pesanan';
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->relationship('users', 'name')
-                    ->required(),
+                Group::make([
+                    TextInput::make('name')
+                        ->readOnly()
+                ])
+                    ->relationship('users'),
                 Forms\Components\Select::make('lapangan_id')
                     ->relationship('lapangans', 'name')
-                    ->required(),
+                    ->disabled(function ($get) {
+                        return is_null($get('class_stage_id'));
+                    }),
                 Forms\Components\DateTimePicker::make('tanggal_pesan')
                     ->required()
+                    ->extraInputAttributes(['readonly' => true])
                     ->maxDate(now()),
                 Forms\Components\DateTimePicker::make('jam_pesan')
                     ->label('Jam Pesan')
-                    ->required(),
-                Forms\Components\TimePicker::make('lama_sewa')->label('Jam Pesan')
-                    ->required(),
-                Forms\Components\TimePicker::make('lama_habis')->label('Jam Pesan')
-                    ->required(),
+                    ->required()
+                    ->extraInputAttributes(['readonly' => true]),
+
+                Forms\Components\Select::make('lama_sewa')
+                    ->options([
+                        '1' => '1 Jam',
+                        '2' => '2 Jam',
+                        '3' => '3 Jam',
+                        '4' => '4 Jam',
+                        '5' => '5 Jam',
+                    ])
+                    ->disabled(function ($get) {
+                        return is_null($get('class_stage_id'));
+                    }),
+                Forms\Components\Select::make('konfirmasi')
+                    ->default('Belum Konfirmasi')
+                    ->options([
+                        'Belum Konfirmasi' => 'Belum Konfirmasi',
+                        'Sudah Konfirmasi' => 'Sudah Konfirmasi',
+                    ])
+                    ->disablePlaceholderSelection(true),
+                Forms\Components\TextInput::make('total_harga')
+                    ->numeric()
+                    ->prefix('Rp')
+                    ->readOnly(),
                 FileUpload::make('bukti_transfer')
                     ->label('Bukti Transfer')
                     ->image()
-                    ->directory('public/images'),
+                    ->directory('images'),
             ]);
     }
 
@@ -65,9 +103,12 @@ class OrderResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('lama_habis')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('total_harga')
+                    ->numeric()
+                    ->prefix('Rp '),
                 ImageColumn::make('bukti_transfer'),
-                Tables\Columns\TextColumn::make('terkonfirmasi')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('konfirmasi')
+
             ])
             ->filters([
                 //

@@ -24,7 +24,7 @@ class LapanganResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationLabel = 'Lapangan';
+    protected static ?string $navigationLabel = 'Data Lapangan';
 
 
     public static function form(Form $form): Form
@@ -39,7 +39,7 @@ class LapanganResource extends Resource
                 FileUpload::make('img')
                     ->label('Gambar Lapangan')
                     ->image()
-                    ->directory('public/images'),
+                    ->directory('images'),
             ]);
     }
 
@@ -49,7 +49,7 @@ class LapanganResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('price')->money('IDR')
+                Tables\Columns\TextColumn::make('price')->money('Rp ')
                     ->sortable(),
                 ImageColumn::make('img') // Display the image in the 'img' column
             ])
@@ -63,7 +63,8 @@ class LapanganResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+        ;
     }
 
     public static function getRelations(): array

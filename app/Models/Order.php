@@ -10,6 +10,7 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'lapangan_id',
+        'lama_sewa',
     ];
 
     public function users()
