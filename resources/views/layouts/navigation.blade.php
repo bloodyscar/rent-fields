@@ -1,26 +1,18 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-white border-b custom-nav border-gray-100" >
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
-                <!-- Logo -->
-                
-
-                <!-- Navigation Links -->
-                {{-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div> --}}
+               
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('lapangan')" :active="request()->routeIs('lapangan')">
+                    <x-nav-link class="custom-text-nav" :href="route('lapangan')" :active="request()->routeIs('lapangan')">
                         {{ __('Lapangan') }}
                     </x-nav-link>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('pembayaran')" :active="request()->routeIs('pembayaran')">
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
+                    <x-nav-link  class="custom-text-nav" :href="route('pembayaran')" :active="request()->routeIs('pembayaran')">
                         {{ __('Pembayaran') }}
                     </x-nav-link>
                 </div>
