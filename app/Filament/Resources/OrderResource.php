@@ -98,7 +98,8 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('tanggal_pesan')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jam_pesan')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('lama_sewa')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('lama_habis')

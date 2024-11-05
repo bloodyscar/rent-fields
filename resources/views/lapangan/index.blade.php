@@ -140,7 +140,7 @@
                     <div class="row">
                       <div class="form-group col-md-6">
                         <label for="tanggal_pesan">Jam Main</label>
-                        <input type="datetime-local" class="form-control" id="tanggal_pesan" name="tanggal_pesan" value="2024-09-17T20:30">
+                        <input type="datetime-local" class="form-control" id="tanggal_pesan" name="tanggal_pesan" >
                       </div>
                       <div class="form-group col-md-6 mt-3">
                         <label for="lama_sewa">Lama Main</label>
