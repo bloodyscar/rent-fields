@@ -21,7 +21,7 @@ return new class extends Migration
             $table->time('lama_habis');
             $table->integer('total_harga');
             $table->string('bukti_transfer');
-            $table->boolean('konfirmasi')->default(false);
+            $table->enum('role', ['Belum Konfirmasi', 'Konfirmasi'])->default('Belum Konfirmasi');
             $table->timestamps();
         });
     }
