@@ -14,7 +14,7 @@ class StatsOverview extends BaseWidget
     {
         return [
             Stat::make('Total Order', value: Order::count()),
-            Stat::make('Total Penyewa', value: User::count()),
+            Stat::make('Total Penyewa', value: User::where('role', 'user')->count()),
             Stat::make('Total Lapangan', value: Lapangan::count()),
         ];
     }
