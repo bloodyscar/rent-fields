@@ -28,9 +28,9 @@ services:
     networks:
       - n-laravel
     depends_on:
-      - database
+      - mysql
 
-  database:
+  mysql:
     image: mysql:8.0
     ports:
       - '3306:3306'
@@ -44,7 +44,7 @@ services:
     expose:
       - '3306'
     volumes:
-      - database:/var/lib/mysql
+      - mysql:/var/lib/mysql
     networks:
       - n-laravel
     healthcheck:
@@ -54,7 +54,7 @@ services:
       retries: 5
 # Names our volume
 volumes:
-  database:
+  mysql:
 
 networks:
   n-laravel:
