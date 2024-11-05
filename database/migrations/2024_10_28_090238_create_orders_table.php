@@ -19,6 +19,7 @@ return new class extends Migration
             $table->dateTime('jam_pesan');
             $table->time('lama_sewa');
             $table->time('lama_habis');
+            $table->integer('total_harga');
             $table->string('bukti_transfer');
             $table->boolean('konfirmasi')->default(false);
             $table->timestamps();
