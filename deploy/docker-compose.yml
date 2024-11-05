@@ -32,15 +32,15 @@ services:
 
   mysql:
     image: mysql:8.0
+    container_name: mysql
     ports:
       - '3306:3306'
     environment:
-      MYSQL_ROOT_PASSWORD: strongpassword
-      MYSQL_DATABASE: skripsi_sportcenter
-      MYSQL_USER: laravel_user
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
       DB_HOST: ${DB_HOST}
-      MYSQL_PASSWORD: strongpassword
-      # Password for root access
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     expose:
       - '3306'
     volumes:
