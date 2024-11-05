@@ -31,7 +31,7 @@ WORKDIR /var/www/html
 # copy necessary files and change permissions
 COPY . .
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage/app/public/images \
+    && chmod -R 775 /var/www/html/storage/app/public \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
 
