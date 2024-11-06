@@ -47,8 +47,8 @@
             @endif
         </div>
 
-        <x-input-label for="role" :value="__('Role')" />
-        <x-text-input id="role" name="role" type="text" class="mt-1 block w-full" :value="old('role', $user->role)" required autocomplete="username" />
+        {{-- <x-input-label for="role" :value="__('Role')" />
+        <x-text-input id="role" name="role" type="text" class="mt-1 block w-full" :value="old('role', $user->role)" required autocomplete="username" /> --}}
 
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
