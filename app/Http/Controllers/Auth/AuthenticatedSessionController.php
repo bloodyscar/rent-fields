@@ -14,8 +14,12 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+        if (Auth::check()) {
+            // if auth is exist, redirect to lapangan page
+            return redirect()->route('lapangan');
+        }
         return view('auth.login');
     }
 

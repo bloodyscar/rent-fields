@@ -1,4 +1,9 @@
-<x-guest-layout>
+<x-guest-layout >
+    <div>
+        <p class="text-center text-xl"><b>Sewa Lapangan</b></p>
+        <p class="text-center text-l">User Login</p>
+    </div>
+    <br>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 

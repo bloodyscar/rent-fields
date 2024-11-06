@@ -129,7 +129,7 @@
         
         // Set the HTML content inside modal-body
         modalBody.innerHTML = `
-        
+    
             <h5 class="text-center mb-3">${court['name']}</h5>
                 <div class="text-center mb-3">
                     <img src="${baseImgUrl}${court['img']}" alt="Lapangan" class="img-fluid" style="max-height: 300px; width:100%; object-fit: cover;">
@@ -141,6 +141,8 @@
                       <div class="form-group col-md-6">
                         <label for="tanggal_pesan">Jam Main</label>
                         <input type="datetime-local" class="form-control" id="tanggal_pesan" name="tanggal_pesan" >
+                        <x-input-error :messages="$errors->get('tanggal_pesan')" class="mt-2" />
+        
                       </div>
                       <div class="form-group col-md-6 mt-3">
                         <label for="lama_sewa">Lama Main</label>

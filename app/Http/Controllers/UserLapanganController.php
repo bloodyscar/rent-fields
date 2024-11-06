@@ -7,6 +7,9 @@ use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
+
 
 function formatCurrency($amount)
 {
@@ -47,6 +50,26 @@ class UserLapanganController extends Controller
     {
 
         $user = Auth::user();
+
+        $validator = Validator::make($request->all(), [
+            'tanggal_pesan' => 'required',
+            // Other field rules
+        ]);
+
+
+        $convert = Carbon::parse($request->tanggal_pesan)->format('Y-m-d H:i:s');
+
+
+        $order = Order::where(function ($query) use ($convert) {
+            $query->where('jam_pesan', '<=', $convert) // Check if booking starts before or at the selected time
+                ->where('lama_habis', '>=', $convert); // Check if booking ends after or at the selected time
+        })->get();
+
+        if (count($order) > 0) {
+            Alert::error('Error', 'Jadwal sudah ada yg booking!');
+            return redirect()->back();
+        }
+
 
         $filePath = $request->file('bukti_transfer')->store('images', 'public');
 

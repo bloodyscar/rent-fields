@@ -30,6 +30,10 @@ WORKDIR /var/www/html
 
 # copy necessary files and change permissions
 COPY . .
+
+# Install Composer dependencies
+RUN composer install --no-dev --optimize-autoloader
+
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage/app/public \
     && chmod -R 775 /var/www/html/bootstrap/cache

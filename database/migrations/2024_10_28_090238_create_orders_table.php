@@ -17,11 +17,11 @@ return new class extends Migration
             $table->foreignId('lapangan_id')->constrained('lapangans')->onDelete('cascade');
             $table->dateTime('tanggal_pesan');
             $table->dateTime('jam_pesan');
-            $table->time('lama_sewa');
-            $table->time('lama_habis');
+            $table->integer('lama_sewa');
+            $table->dateTime('lama_habis');
             $table->integer('total_harga');
             $table->string('bukti_transfer');
-            $table->enum('role', ['Belum Konfirmasi', 'Konfirmasi'])->default('Belum Konfirmasi');
+            $table->enum('konfirmasi', ['Belum Konfirmasi', 'Konfirmasi'])->default('Belum Konfirmasi');
             $table->timestamps();
         });
     }

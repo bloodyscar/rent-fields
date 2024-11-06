@@ -92,8 +92,10 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('users.name')
+                    ->label('Nama Penyewa')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('lapangans.name')
+                    ->label('Lapangan')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tanggal_pesan')
                     ->searchable(),
