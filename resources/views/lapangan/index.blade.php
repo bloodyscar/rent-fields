@@ -54,7 +54,6 @@
 
 
     {{-- Modal Pesan --}}
-
     <div class="modal fade" id="pesanModal" tabindex="-1" aria-labelledby="pesanModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -96,7 +95,8 @@
   <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
   <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
   <script>
 
@@ -109,7 +109,7 @@
     
     // document ready
     window.addEventListener('DOMContentLoaded', () => {
-        // renderUtama();
+        // Initialize the DataTable
     });
 
     function updateTotal() {
@@ -129,18 +129,20 @@
         
         // Set the HTML content inside modal-body
         modalBody.innerHTML = `
-    
             <h5 class="text-center mb-3">${court['name']}</h5>
                 <div class="text-center mb-3">
                     <img src="${baseImgUrl}${court['img']}" alt="Lapangan" class="img-fluid" style="max-height: 300px; width:100%; object-fit: cover;">
                 </div>
-                <form method="post" action="{{ route('order.store') }}" enctype="multipart/form-data" id="orderForm" >
+                <form method="POST" action="{{ route('order.store') }}" enctype="multipart/form-data" id="orderForm">
                     @csrf   
                     <input type="text" class="form-control" id="lapangan_id" value="${court['id']}" readonly name="lapangan_id" hidden>
                     <div class="row">
                       <div class="form-group col-md-6">
-                        <label for="tanggal_pesan">Jam Main</label>
-                        <input type="datetime-local" class="form-control" id="tanggal_pesan" name="tanggal_pesan" >
+                        <label for="jam_main">Jam Main</label>
+                        <input type="datetime-local" class="form-control" id="jam_main" name="jam_main" >
+                         @error('jam_main')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                         <x-input-error :messages="$errors->get('tanggal_pesan')" class="mt-2" />
         
                       </div>
@@ -182,6 +184,7 @@
                     <div class="form-group">
                       <label for="bukti_transfer">Upload Bukti</label>
                       <input type="file" class="form-control-file" id="bukti_transfer" name="bukti_transfer">
+                      
                     </div>
 
                     <div class="modal-footer">
@@ -192,6 +195,55 @@
                     
                   </form>
         `;
+
+        // Handle the form submission with AJAX
+        const orderForm = document.getElementById('orderForm');
+        orderForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Log to confirm submission is intercepted
+            console.log("Intercepting form submission");
+
+            // Create FormData object
+            let formData = new FormData(this);
+
+            // Send the request via fetch with POST method
+            fetch("{{ route('order.store') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.errors)
+                if (data.errors) {
+                    // Display errors if any
+                    console.log(data.errors);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: Object.values(data.errors).map(errors => errors).join('\n'),
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                } else if (data.redirect) {
+                    Swal.fire({
+                    title: 'Success',
+                    text: data.message,  // Use the message from the server
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // After the user clicks "OK", redirect
+                    window.location.href = data.redirect; // Or use window.location.replace(data.redirect);
+                });
+                }
+
+            })
+            .catch(error => console.error("Error:", error));
+        });
+
+        
     }
 
     const renderUtama = (id) => {

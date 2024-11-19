@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
+use Filament\Actions\Modal\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -13,10 +14,13 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 
 use function Laravel\Prompts\search;
 
@@ -109,7 +113,7 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('total_harga')
                     ->numeric()
                     ->prefix('Rp '),
-                ImageColumn::make('bukti_transfer'),
+
                 Tables\Columns\TextColumn::make('konfirmasi')
 
             ])
@@ -117,12 +121,20 @@ class OrderResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('Bukti Transfer')
+                    ->modalContent(fn(Order $order) => view('filament.pages.actions.image', ['order' => $order]))
+                    ->modalSubmitAction(false),
                 Tables\Actions\EditAction::make(),
+
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
+                // BulkAction::make('delete')
+                //     ->action(fn(Collection $records) => $records->each->delete())
+
+
             ]);
     }
 

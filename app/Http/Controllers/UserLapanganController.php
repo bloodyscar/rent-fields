@@ -49,32 +49,42 @@ class UserLapanganController extends Controller
     public function postOrder(Request $request)
     {
 
-        $user = Auth::user();
 
+        // Check if the request is AJAX
         $validator = Validator::make($request->all(), [
-            'tanggal_pesan' => 'required',
-            // Other field rules
+            'jam_main' => 'required',
+            'lama_sewa' => 'required',
+            'bukti_transfer' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
-        $convert = Carbon::parse($request->tanggal_pesan)->format('Y-m-d H:i:s');
 
+        $user = Auth::user();
 
-        $order = Order::where(function ($query) use ($convert) {
-            $query->where('jam_pesan', '<=', $convert) // Check if booking starts before or at the selected time
-                ->where('lama_habis', '>=', $convert); // Check if booking ends after or at the selected time
-        })->get();
+        $convert = Carbon::parse($request->jam_main)->format('Y-m-d H:i:s');
+
+        $order = Order::where('lapangan_id', $request->lapangan_id)
+            ->where(function ($query) use ($convert) {
+                $query->where('jam_pesan', '<=', $convert)
+                    ->where('lama_habis', '>=', $convert);
+            })
+            ->get();
+
 
         if (count($order) > 0) {
-            Alert::error('Error', 'Jadwal sudah ada yg booking!');
-            return redirect()->back();
+            return response()->json([
+                'errors' => ["Jadwal sudah ada yang booking"],
+            ], 422);
         }
 
 
         $filePath = $request->file('bukti_transfer')->store('images', 'public');
 
 
-        $lama_habis = addTime($request->tanggal_pesan, $request->lama_sewa);
+        $lama_habis = addTime($request->jam_main, $request->lama_sewa);
 
         $currentDateTime = now();
 
@@ -84,7 +94,7 @@ class UserLapanganController extends Controller
             'user_id' => $user->id,
             'lapangan_id' => $request->lapangan_id,
             'tanggal_pesan' => $currentDateTime,
-            'jam_pesan' => $request->tanggal_pesan,
+            'jam_pesan' => $request->jam_main,
             'lama_sewa' => $request->lama_sewa,
             'lama_habis' => $lama_habis,
             'total_harga' => formatCurrency($request->total),
@@ -92,8 +102,10 @@ class UserLapanganController extends Controller
             'bukti_transfer' => $filePath ?? null,
         ]);
 
-        // Redirect or return a response
-        return redirect()->route('pembayaran')->with('message', 'Order successful!');
+        return response()->json([
+            'redirect' => route('pembayaran'),
+            'message' => 'Order successful!',
+        ]);
     }
 
     public function get_jadwal(Request $request)

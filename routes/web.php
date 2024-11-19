@@ -18,7 +18,7 @@ Route::get('/lapangan', [UserLapanganController::class, 'index'])->middleware(['
 Route::get('/lapangan/get_jadwal', [UserLapanganController::class, 'get_jadwal'])->middleware(['auth', 'verified']);
 
 
-Route::post('/lapangan/order', [UserLapanganController::class, 'postOrder'])->middleware(['auth', 'verified'])->name('order.store');
+Route::post('/lapangan/order', [UserLapanganController::class, 'postOrder'])->name('order.store');
 
 Route::get('/pembayaran', function () {
     return view('pembayaran.index');

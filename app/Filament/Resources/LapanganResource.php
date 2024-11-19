@@ -3,17 +3,22 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\LapanganResource\Pages;
-use App\Filament\Resources\LapanganResource\RelationManagers;
 use App\Models\Lapangan;
+use App\Models\Order;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\Layout\View;
 
 class LapanganResource extends Resource
 {
@@ -51,13 +56,19 @@ class LapanganResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')->money('Rp ')
                     ->sortable(),
-                ImageColumn::make('img') // Display the image in the 'img' column
+                ImageColumn::make('img')
+                    ->label('Image')
+                    ->sortable()
+                    ->extraAttributes(['class' => 'clickable-image']),
+
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -79,7 +90,7 @@ class LapanganResource extends Resource
         return [
             'index' => Pages\ListLapangans::route('/'),
             'create' => Pages\CreateLapangan::route('/create'),
-            'edit' => Pages\EditLapangan::route('/{record}/edit'),
+            // 'edit' => Pages\EditLapangan::route('/{record}/edit'),
         ];
     }
 }
