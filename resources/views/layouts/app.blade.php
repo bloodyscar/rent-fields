@@ -48,6 +48,10 @@
                 {{ $slot }}
             </main>
         </div>
+        <footer style="text-align: center; padding: 20px; background-color: #f8f9fa; color: #333; font-size: 16px; position: fixed; bottom: 0; width: 100%;">
+            <div>Jika ada pertanyaan, silahkan menghubungi</div>
+            <div><b>Ivan 0821-1616-0388</b></div>
+        </footer>
     </body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     

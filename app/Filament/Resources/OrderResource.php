@@ -121,9 +121,13 @@ class OrderResource extends Resource
                 //
             ])
             ->actions([
+                // Tables\Actions\Action::make('Bukti Transfer')
+                //     ->modalContent(fn(Order $order) => view('filament.pages.actions.image', ['order' => $order]))
+                //     ->modalSubmitAction(false),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('Bukti Transfer')
-                    ->modalContent(fn(Order $order) => view('filament.pages.actions.image', ['order' => $order]))
-                    ->modalSubmitAction(false),
+                    ->url(fn(Order $order) => route('order.newtab', ['id' => $order->id]))
+                    ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
 
             ])

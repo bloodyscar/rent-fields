@@ -20,6 +20,8 @@ Route::get('/lapangan/get_jadwal', [UserLapanganController::class, 'get_jadwal']
 
 Route::post('/lapangan/order', [UserLapanganController::class, 'postOrder'])->name('order.store');
 
+Route::get('/lapangan/image/{id}', [UserLapanganController::class, 'newTab'])->name('order.newtab');
+
 Route::get('/pembayaran', function () {
     return view('pembayaran.index');
 })->middleware(['auth', 'verified'])->name('pembayaran');

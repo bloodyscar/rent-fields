@@ -43,12 +43,28 @@ class UserLapanganController extends Controller
         return view('lapangan.index', compact('courts'));
     }
 
+    public function newTab($id)
+    {
+        $order = Order::findOrFail($id);
+
+        // Ensure the `bukti_transfer` attribute contains the image URL or path
+        $imagePath = $order->bukti_transfer;
+
+        // Redirect to the image URL if it's external, or serve it if it's local
+        if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+            return redirect($imagePath);
+        }
+
+        return response()->file(storage_path('app/public/' . $imagePath));
+    }
+
 
 
 
     public function postOrder(Request $request)
     {
 
+        // Penerapan Algoritma First Come First Served
 
         // Check if the request is AJAX
         $validator = Validator::make($request->all(), [
@@ -66,6 +82,7 @@ class UserLapanganController extends Controller
 
         $convert = Carbon::parse($request->jam_main)->format('Y-m-d H:i:s');
 
+        // Cek konflik dengan pesanan lain
         $order = Order::where('lapangan_id', $request->lapangan_id)
             ->where(function ($query) use ($convert) {
                 $query->where('jam_pesan', '<=', $convert)
@@ -73,7 +90,7 @@ class UserLapanganController extends Controller
             })
             ->get();
 
-
+        // Jika ada konflik, tolak pemesanan
         if (count($order) > 0) {
             return response()->json([
                 'errors' => ["Jadwal sudah ada yang booking"],
@@ -88,8 +105,7 @@ class UserLapanganController extends Controller
 
         $currentDateTime = now();
 
-
-        // Save order details to database (Example)
+        // Jika tidak ada konflik, tambahkan ke database
         Order::create([
             'user_id' => $user->id,
             'lapangan_id' => $request->lapangan_id,
