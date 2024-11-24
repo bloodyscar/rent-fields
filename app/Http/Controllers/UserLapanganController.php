@@ -66,20 +66,22 @@ class UserLapanganController extends Controller
 
         // Penerapan Algoritma First Come First Served
 
-        // Check if the request is AJAX
+        // validasi input dari user
         $validator = Validator::make($request->all(), [
             'jam_main' => 'required',
             'lama_sewa' => 'required',
             'bukti_transfer' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
+        // Jika validasi gagal, kembalikan pesan error
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-
+        // Ambil user yang sedang login
         $user = Auth::user();
 
+        // Konversi jam main ke format yang lebih mudah dibaca
         $convert = Carbon::parse($request->jam_main)->format('Y-m-d H:i:s');
 
         // Cek konflik dengan pesanan lain
@@ -97,12 +99,13 @@ class UserLapanganController extends Controller
             ], 422);
         }
 
-
+        // Simpan bukti transfer ke storage
         $filePath = $request->file('bukti_transfer')->store('images', 'public');
 
-
+        // Hitung waktu habis
         $lama_habis = addTime($request->jam_main, $request->lama_sewa);
 
+        // Ambil waktu sekarang
         $currentDateTime = now();
 
         // Jika tidak ada konflik, tambahkan ke database
@@ -118,6 +121,7 @@ class UserLapanganController extends Controller
             'bukti_transfer' => $filePath ?? null,
         ]);
 
+        // Redirect ke halaman pembayaran
         return response()->json([
             'redirect' => route('pembayaran'),
             'message' => 'Order successful!',
