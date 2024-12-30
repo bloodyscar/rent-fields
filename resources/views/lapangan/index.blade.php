@@ -22,7 +22,8 @@
                             @foreach($courts as $court)
                         <div class="card m-4" style="width: 18rem;">
                             <div class="card-body">
-                                <img src="{{ asset('storage/' . $court['img']) }}" class="card-img-top" alt="...">
+                                <img src="{{ asset('storage/' . $court['img']) }}" class="card-img-top" alt="..."
+                                style="width: 100%; height: 100px; object-fit: cover;">
         
                                 <div class="card-title text-center mb-3"><h3>{{ $court['name'] }}</h3></div>
                                 
